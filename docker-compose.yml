@@ -14,16 +14,15 @@ services:
     volumes:
       - .:/var/www:delegated
     privileged: true
-    container_name: community-flarum-svc
+    container_name: flarum-svc
     environment:
       MYSQL_USER: flarum
       MYSQL_PASSWORD: flarum
       MYSQL_DATABASE: flarum
-      MYSQL_HOST: communitydb
+      MYSQL_HOST: flarumdb
       MYSQL_PORT: 3306
       DB_DRIVER: mysql
       BASE_URL: "http://localhost:8001"
-      OAUTH_KEY: YWJjZGVmZzEyMzQ1Ng==
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
       DEBUG: "true"
@@ -56,7 +55,7 @@ services:
       - ./database:/var/lib/mysql:delegated
     ports:
       - "3306:3306"
-    container_name: communitydb
+    container_name: flarumdb
 
   #######################################
   # PHPMyAdmin
@@ -64,7 +63,7 @@ services:
   flarum-pma:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOSTS: "communitydb"
+      PMA_HOSTS: "flarumdb"
       PMA_VERBOSES: "Flarum Database"
     ports:
       - "127.0.0.1:8002:80"
@@ -72,33 +71,29 @@ services:
       - flarum-db
     depends_on:
       - flarum-db
-    container_name: communitypma
+    container_name: flarumpma
 
   #######################################
   # Local Queue Worker
   #######################################
-  apache-queue-worker:
+  apache-queue:
     build:
       context: .
       dockerfile: Dockerfile.queue.dev
-    ports:
-      - "127.0.0.1:8003:8080"
     volumes:
       - .:/var/www:delegated
+    privileged: true
     links:
       - flarum-db
-    depends_on:
-      - flarum-db
-    container_name: community-queue-worker
+    container_name: flarum-queue
     environment:
       MYSQL_USER: flarum
       MYSQL_PASSWORD: flarum
       MYSQL_DATABASE: flarum
-      MYSQL_HOST: communitydb
+      MYSQL_HOST: flarumdb
       MYSQL_PORT: 3306
       DB_DRIVER: mysql
-      BASE_URL: ""
-      OAUTH_KEY: YWJjZGVmZzEyMzQ1Ng==
+      BASE_URL: "http://localhost:8001"
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
       DEBUG: "true"

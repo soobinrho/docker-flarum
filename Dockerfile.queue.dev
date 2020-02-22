@@ -5,9 +5,6 @@ COPY ./scripts/docker/config/apache/status.conf /etc/apache2/mods-enabled/status
 COPY ./scripts/docker/config/php/startup-queue.sh /usr/local/bin/startup
 COPY ./scripts/docker/config/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./scripts/docker/config/php/sessions.ini /usr/local/etc/php/conf.d/sessions.ini
-COPY ./scripts/docker/config/cronjobs/crontab /etc/cron.d/crontab
-
-RUN chmod 0644 /etc/cron.d/crontab
 
 WORKDIR /var/www
 
@@ -15,9 +12,7 @@ RUN rm -rf /var/www/html
 COPY . /var/www/
 RUN composer install --no-dev \
   && chmod -R g+w /var/www \
-  && chmod 755 /usr/local/bin/startup \
-  && chown -R www-data:www-data /var/www/public/assets \
-  && chmod -R 777 /var/www/public/assets
+  && chmod 755 /usr/local/bin/startup
 
 ENV MYSQL_DATABASE "flarum"
 ENV MYSQL_USER "flarum"

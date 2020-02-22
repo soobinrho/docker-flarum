@@ -18,6 +18,8 @@ RUN composer install --no-dev \
   && chmod -R g+w /var/www \
   && chmod 755 /usr/local/bin/startup
 
+RUN chmod 775 /var/www
+
 ENV MYSQL_DATABASE "flarum"
 ENV MYSQL_USER "flarum"
 ENV MYSQL_PASSWORD "flarum"

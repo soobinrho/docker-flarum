@@ -1,12 +1,12 @@
 #!/bin/bash
 
+chmod -R 777 /var/www
+
 # Clear cache - this is essential once we mount the EFS volume
 cd /var/www && php flarum cache:clear
 
 # We will also need to add the running of migrations here
 cd /var/www && php flarum migrate
-
-chmod -R 755 /var/www
 
 # Symlink fonts
 # ln -sF /var/www/vendor/components/font-awesome/webfonts /var/www/public/assets/fonts
