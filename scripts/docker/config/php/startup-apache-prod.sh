@@ -9,7 +9,7 @@ chmod -R 777 /var/www/public/assets
 # ln -sF /var/www/vendor/components/font-awesome/webfonts /var/www/public/assets/fonts
 
 chmod -R 777 /var/www/storage
-chmod -R 775 /var/www
+chmod -R 755 /var/www
 
 # Make the environment variables available for cron
 printenv | grep -v "no_proxy" >> /etc/environment
