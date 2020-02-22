@@ -1,11 +1,25 @@
 <p align="center"><img src="https://flarum.org/img/logo.png"></p>
+<p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" style=";max-width:200px"></p>
 
-<p align="center">
-<a href="https://travis-ci.org/flarum/core"><img src="https://travis-ci.org/flarum/core.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/license.svg" alt="License"></a>
-</p>
+
+## About this project
+This repo is intended to be an aide for developing Flarum extensions using docker. The seeds are here for this to become production ready, although it's not quite there yet. PRs welcome.
+
+#### Versions
+- PHP: 7.4.3
+- Debian: 10
+- Percona: 5.7
+- Redis: 5
+- PHPMyAdmin: latest
+
+#### Default Configuration
+All Flarum settings are default, except
+- Mail driver set to `log`
+- `Bokt/flarum-redis` is installed and enabled, for both cache and queue
+- Login credentials `admin/admin`
+- Access via `http://localhost:8001`
+- PHPMyAdmin credentials `flarum/flarum`
+- PMA access via `http://localhost:8002`
 
 ## About Flarum
 
@@ -21,23 +35,16 @@
 
 ## Installation
 
-You must have SSH access to a server with **PHP 7.1+** and **MySQL 5.6+**, and install [Composer](https://getcomposer.org/).
+This project wraps a default Flarum installation, adds Redis drivers, and spins up an additional container acting as the queue worker. DB uses Percona 5.7, and PHPMyAdmin is also included.
 
-```
-composer create-project flarum/flarum . --stability=beta
+```bash
+$ composer install
+$ docker-compose build
+$ docker-compose up
 ```
 
 Read the **[Installation guide](https://flarum.org/docs/install.html)** for more information. For support, refer to the [documentation](https://flarum.org/docs/), and ask questions on the [community forum](https://discuss.flarum.org/) or [Discord chat](https://flarum.org/discord/).
 
-## Contributing
-
-Thank you for considering contributing to Flarum! Please read the **[Contributing guide](https://flarum.org/docs/contributing.html)** to learn how you can help.
-
-This repository only holds the Flarum skeleton application. Most development happens in [flarum/core](https://github.com/flarum/core).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Flarum, please send an e-mail to [security@flarum.org](mailto:security@flarum.org). All security vulnerabilities will be promptly addressed.
 
 ## License
 
