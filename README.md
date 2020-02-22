@@ -1,5 +1,5 @@
 <p align="center"><img src="https://flarum.org/img/logo.png"></p>
-<p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" style=";max-width:200px"></p>
+<p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" style="max-width:150px"></p>
 
 
 ## About this project
@@ -16,6 +16,7 @@ This repo is intended to be an aide for developing Flarum extensions using docke
 All Flarum settings are default, except
 - Mail driver set to `log`
 - `Bokt/flarum-redis` is installed and enabled, for both cache and queue
+- `fof/console` is installed, with supporting cron pre-configured. Add scheduled tasks with ease to the Flarum scheduler
 - Login credentials `admin/admin`
 - Access via `http://localhost:8001`
 - PHPMyAdmin credentials `flarum/flarum`
