@@ -2,9 +2,9 @@
 -- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
--- Host: communitydb
--- Generation Time: Feb 22, 2020 at 03:50 AM
--- Server version: 5.7.29-32
+-- Host: flarumdb
+-- Generation Time: Feb 22, 2020 at 07:49 AM
+-- Server version: 5.7.29
 -- PHP Version: 7.4.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -21,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `flarum`
 --
+CREATE DATABASE IF NOT EXISTS `flarum` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `flarum`;
 
 -- --------------------------------------------------------
 
@@ -35,6 +37,13 @@ CREATE TABLE `flarum_access_tokens` (
   `lifetime_seconds` int(11) NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `flarum_access_tokens`
+--
+
+INSERT INTO `flarum_access_tokens` (`token`, `user_id`, `last_activity_at`, `lifetime_seconds`, `created_at`) VALUES
+('1dA4pFuz9sTdtsSTx4aECafuTuK30Sxe1CKDXg4D', 1, '2020-02-22 07:30:44', 3600, '2020-02-22 07:30:44');
 
 -- --------------------------------------------------------
 
@@ -77,7 +86,11 @@ CREATE TABLE `flarum_discussions` (
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   `is_approved` tinyint(1) NOT NULL DEFAULT '1',
   `is_locked` tinyint(1) NOT NULL DEFAULT '0',
-  `is_sticky` tinyint(1) NOT NULL DEFAULT '0'
+  `is_sticky` tinyint(1) NOT NULL DEFAULT '0',
+  `best_answer_post_id` int(10) UNSIGNED DEFAULT NULL,
+  `best_answer_user_id` int(10) UNSIGNED DEFAULT NULL,
+  `best_answer_notified` tinyint(1) NOT NULL,
+  `best_answer_set_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -179,6 +192,7 @@ INSERT INTO `flarum_group_permission` (`group_id`, `permission`) VALUES
 (3, 'discussion.likePosts'),
 (3, 'discussion.reply'),
 (3, 'discussion.replyWithoutApproval'),
+(3, 'discussion.selectBestAnswerOwnDiscussion'),
 (3, 'discussion.startWithoutApproval'),
 (3, 'startDiscussion'),
 (3, 'viewUserList'),
@@ -354,7 +368,11 @@ INSERT INTO `flarum_migrations` (`migration`, `extension`) VALUES
 ('2018_06_27_100200_change_tag_user_add_foreign_keys', 'flarum-tags'),
 ('2018_06_27_103000_rename_discussions_tags_to_discussion_tag', 'flarum-tags'),
 ('2018_06_27_103100_add_discussion_tag_foreign_keys', 'flarum-tags'),
-('2019_04_21_000000_add_icon_to_tags_table', 'flarum-tags');
+('2019_04_21_000000_add_icon_to_tags_table', 'flarum-tags'),
+('2019_11_04_000001_add_columns_to_discussions_table', 'fof-best-answer'),
+('2019_11_04_000002_add_foreign_keys_to_best_anwer_columns', 'fof-best-answer'),
+('2019_11_04_000003_migrate_extension_settings', 'fof-best-answer'),
+('2020_02_04_205300_add_best_answer_set_timestamp', 'fof-best-answer');
 
 -- --------------------------------------------------------
 
@@ -490,11 +508,18 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 ('custom_less', ''),
 ('default_locale', 'en'),
 ('default_route', '/all'),
-('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\"]'),
+('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\",\"fof-best-answer\"]'),
 ('flarum-tags.max_primary_tags', '1'),
 ('flarum-tags.max_secondary_tags', '3'),
 ('flarum-tags.min_primary_tags', '1'),
 ('flarum-tags.min_secondary_tags', '0'),
+('fof-best-answer.allow_select_own_post', '1'),
+('fof-best-answer.remind_tag_ids', ''),
+('fof-best-answer.schedule_on_one_server', '0'),
+('fof-best-answer.select_best_answer_reminder_days', '1'),
+('fof-best-answer.stop_overnight', '0'),
+('fof-best-answer.store_log_output', '1'),
+('fof-best-answer.use_alternative_ui', ''),
 ('forum_description', ''),
 ('forum_title', 'Flarum Dev Docker'),
 ('mail_driver', 'log'),
@@ -583,7 +608,7 @@ CREATE TABLE `flarum_users` (
 --
 
 INSERT INTO `flarum_users` (`id`, `username`, `email`, `is_email_confirmed`, `password`, `bio`, `avatar_url`, `preferences`, `joined_at`, `last_seen_at`, `marked_all_as_read_at`, `read_notifications_at`, `discussion_count`, `comment_count`, `read_flags_at`, `suspended_until`) VALUES
-(1, 'admin', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-02-22 03:46:53', NULL, NULL, 0, 0, NULL, NULL);
+(1, 'admin', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-02-22 07:49:14', NULL, NULL, 0, 0, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -620,7 +645,10 @@ ALTER TABLE `flarum_discussions`
   ADD KEY `flarum_discussions_participant_count_index` (`participant_count`),
   ADD KEY `flarum_discussions_hidden_at_index` (`hidden_at`),
   ADD KEY `flarum_discussions_is_locked_index` (`is_locked`),
-  ADD KEY `flarum_discussions_is_sticky_created_at_index` (`is_sticky`,`created_at`);
+  ADD KEY `flarum_discussions_is_sticky_created_at_index` (`is_sticky`,`created_at`),
+  ADD KEY `flarum_discussions_best_answer_post_id_foreign` (`best_answer_post_id`),
+  ADD KEY `flarum_discussions_best_answer_user_id_foreign` (`best_answer_user_id`),
+  ADD KEY `flarum_discussions_best_answer_set_at_index` (`best_answer_set_at`);
 ALTER TABLE `flarum_discussions` ADD FULLTEXT KEY `title` (`title`);
 
 --
@@ -855,6 +883,8 @@ ALTER TABLE `flarum_api_keys`
 -- Constraints for table `flarum_discussions`
 --
 ALTER TABLE `flarum_discussions`
+  ADD CONSTRAINT `flarum_discussions_best_answer_post_id_foreign` FOREIGN KEY (`best_answer_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `flarum_discussions_best_answer_user_id_foreign` FOREIGN KEY (`best_answer_user_id`) REFERENCES `flarum_users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_first_post_id_foreign` FOREIGN KEY (`first_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_hidden_user_id_foreign` FOREIGN KEY (`hidden_user_id`) REFERENCES `flarum_users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_last_post_id_foreign` FOREIGN KEY (`last_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
