@@ -21,27 +21,23 @@
         "docs": "https://flarum.org/docs/"
     },
     "require": {
-        "bokt/flarum-redis": "^0.1.0",
-        "flarum/approval": "^0.1.0",
-        "flarum/bbcode": "^0.1.0",
-        "flarum/core": "^0.1.0",
-        "flarum/emoji": "^0.1.0",
-        "flarum/flags": "^0.1.0",
-        "flarum/lang-english": "^0.1.0",
-        "flarum/likes": "^0.1.0",
-        "flarum/lock": "^0.1.0",
-        "flarum/markdown": "^0.1.0",
-        "flarum/mentions": "^0.1.0",
-        "flarum/statistics": "^0.1.0",
-        "flarum/sticky": "^0.1.0",
-        "flarum/subscriptions": "^0.1.0",
-        "flarum/suspend": "^0.1.0",
-        "flarum/tags": "^0.1.0",
-        "fof/best-answer": "^0.1.6",
-        "fof/console": "^0.5.1",
-        "guzzlehttp/guzzle": "^6.5",
-        "ramsey/uuid": "^3.9",
-        "symfony/var-dumper": "^5.0"
+        "bokt/flarum-redis": "*",
+        "flarum/approval": "*",
+        "flarum/bbcode": "*",
+        "flarum/core": "v0.1.0-beta.13",
+        "flarum/emoji": "*",
+        "flarum/flags": "*",
+        "flarum/lang-english": "*",
+        "flarum/likes": "*",
+        "flarum/lock": "*",
+        "flarum/markdown": "*",
+        "flarum/mentions": "*",
+        "flarum/statistics": "*",
+        "flarum/sticky": "*",
+        "flarum/subscriptions": "*",
+        "flarum/suspend": "*",
+        "flarum/tags": "*",
+        "fof/console": "*"
     },
     "config": {
         "preferred-install": "dist",
@@ -54,5 +50,8 @@
             "type": "path",
             "url": "workbench/*"
         }
-    ]
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^5.1"
+    }
 }

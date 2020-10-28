@@ -6,9 +6,10 @@
 This repo is intended to be an aide for developing Flarum extensions using docker. The seeds are here for this to become production ready, although it's not quite there yet. PRs welcome.
 
 #### Versions
-- PHP: 7.4.3
+- Flarum: 0.1.0-beta.13
+- PHP: 7.4.11
 - Debian: 10
-- Percona: 5.7
+- Percona: 8
 - Redis: 5
 - PHPMyAdmin: latest
 
@@ -36,7 +37,7 @@ All Flarum settings are default, except
 
 ## Installation
 
-This project wraps a default Flarum installation, adds Redis drivers, and spins up an additional container acting as the queue worker. DB uses Percona 5.7, and PHPMyAdmin is also included.
+This project wraps a default Flarum installation, adds Redis drivers, and spins up an additional container acting as the queue worker. DB uses Percona 8, and PHPMyAdmin is also included.
 
 ```bash
 $ composer install

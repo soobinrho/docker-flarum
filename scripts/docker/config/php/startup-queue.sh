@@ -2,4 +2,4 @@
 
 echo "Starting Redis Queue Processor"
 
-apache2-foreground & php /var/www/flarum queue:work
+php /var/www/flarum queue:work

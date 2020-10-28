@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: flarumdb
--- Generation Time: Feb 22, 2020 at 07:49 AM
--- Server version: 5.7.29
--- PHP Version: 7.4.1
+-- Generation Time: Oct 28, 2020 at 07:46 PM
+-- Server version: 8.0.20-11
+-- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -21,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `flarum`
 --
-CREATE DATABASE IF NOT EXISTS `flarum` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `flarum`;
 
 -- --------------------------------------------------------
 
@@ -31,10 +28,10 @@ USE `flarum`;
 --
 
 CREATE TABLE `flarum_access_tokens` (
-  `token` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
+  `token` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `last_activity_at` datetime NOT NULL,
-  `lifetime_seconds` int(11) NOT NULL,
+  `lifetime_seconds` int NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -52,11 +49,11 @@ INSERT INTO `flarum_access_tokens` (`token`, `user_id`, `last_activity_at`, `lif
 --
 
 CREATE TABLE `flarum_api_keys` (
-  `key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id` int(10) UNSIGNED NOT NULL,
-  `allowed_ips` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `scopes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_id` int(10) UNSIGNED DEFAULT NULL,
+  `key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `allowed_ips` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `scopes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_id` int UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `last_activity_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -68,30 +65,33 @@ CREATE TABLE `flarum_api_keys` (
 --
 
 CREATE TABLE `flarum_discussions` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `comment_count` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `participant_count` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `post_number_index` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `id` int UNSIGNED NOT NULL,
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `comment_count` int NOT NULL DEFAULT '1',
+  `participant_count` int UNSIGNED NOT NULL DEFAULT '0',
+  `post_number_index` int UNSIGNED NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL,
-  `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `first_post_id` int(10) UNSIGNED DEFAULT NULL,
+  `user_id` int UNSIGNED DEFAULT NULL,
+  `first_post_id` int UNSIGNED DEFAULT NULL,
   `last_posted_at` datetime DEFAULT NULL,
-  `last_posted_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `last_post_id` int(10) UNSIGNED DEFAULT NULL,
-  `last_post_number` int(10) UNSIGNED DEFAULT NULL,
+  `last_posted_user_id` int UNSIGNED DEFAULT NULL,
+  `last_post_id` int UNSIGNED DEFAULT NULL,
+  `last_post_number` int UNSIGNED DEFAULT NULL,
   `hidden_at` datetime DEFAULT NULL,
-  `hidden_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `hidden_user_id` int UNSIGNED DEFAULT NULL,
+  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   `is_approved` tinyint(1) NOT NULL DEFAULT '1',
   `is_locked` tinyint(1) NOT NULL DEFAULT '0',
-  `is_sticky` tinyint(1) NOT NULL DEFAULT '0',
-  `best_answer_post_id` int(10) UNSIGNED DEFAULT NULL,
-  `best_answer_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `best_answer_notified` tinyint(1) NOT NULL,
-  `best_answer_set_at` datetime DEFAULT NULL
+  `is_sticky` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `flarum_discussions`
+--
+
+INSERT INTO `flarum_discussions` (`id`, `title`, `comment_count`, `participant_count`, `post_number_index`, `created_at`, `user_id`, `first_post_id`, `last_posted_at`, `last_posted_user_id`, `last_post_id`, `last_post_number`, `hidden_at`, `hidden_user_id`, `slug`, `is_private`, `is_approved`, `is_locked`, `is_sticky`) VALUES
+(1, 'Example discussion', 1, 1, 1, '2020-10-28 19:43:28', 1, 1, '2020-10-28 19:43:28', 1, 1, 1, NULL, NULL, 'example-discussion', 0, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -100,9 +100,16 @@ CREATE TABLE `flarum_discussions` (
 --
 
 CREATE TABLE `flarum_discussion_tag` (
-  `discussion_id` int(10) UNSIGNED NOT NULL,
-  `tag_id` int(10) UNSIGNED NOT NULL
+  `discussion_id` int UNSIGNED NOT NULL,
+  `tag_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `flarum_discussion_tag`
+--
+
+INSERT INTO `flarum_discussion_tag` (`discussion_id`, `tag_id`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -111,12 +118,19 @@ CREATE TABLE `flarum_discussion_tag` (
 --
 
 CREATE TABLE `flarum_discussion_user` (
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `discussion_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `discussion_id` int UNSIGNED NOT NULL,
   `last_read_at` datetime DEFAULT NULL,
-  `last_read_post_number` int(10) UNSIGNED DEFAULT NULL,
-  `subscription` enum('follow','ignore') COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `last_read_post_number` int UNSIGNED DEFAULT NULL,
+  `subscription` enum('follow','ignore') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `flarum_discussion_user`
+--
+
+INSERT INTO `flarum_discussion_user` (`user_id`, `discussion_id`, `last_read_at`, `last_read_post_number`, `subscription`) VALUES
+(1, 1, '2020-10-28 19:43:28', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -125,9 +139,9 @@ CREATE TABLE `flarum_discussion_user` (
 --
 
 CREATE TABLE `flarum_email_tokens` (
-  `token` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
+  `token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -138,12 +152,12 @@ CREATE TABLE `flarum_email_tokens` (
 --
 
 CREATE TABLE `flarum_flags` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `reason` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `reason_detail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `post_id` int UNSIGNED NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int UNSIGNED DEFAULT NULL,
+  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `reason_detail` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -154,22 +168,23 @@ CREATE TABLE `flarum_flags` (
 --
 
 CREATE TABLE `flarum_groups` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name_singular` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_plural` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `color` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `icon` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `id` int UNSIGNED NOT NULL,
+  `name_singular` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_plural` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_hidden` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `flarum_groups`
 --
 
-INSERT INTO `flarum_groups` (`id`, `name_singular`, `name_plural`, `color`, `icon`) VALUES
-(1, 'Admin', 'Admins', '#B72A2A', 'fas fa-wrench'),
-(2, 'Guest', 'Guests', NULL, NULL),
-(3, 'Member', 'Members', NULL, NULL),
-(4, 'Mod', 'Mods', '#80349E', 'fas fa-bolt');
+INSERT INTO `flarum_groups` (`id`, `name_singular`, `name_plural`, `color`, `icon`, `is_hidden`) VALUES
+(1, 'Admin', 'Admins', '#B72A2A', 'fas fa-wrench', 0),
+(2, 'Guest', 'Guests', NULL, NULL, 0),
+(3, 'Member', 'Members', NULL, NULL, 0),
+(4, 'Mod', 'Mods', '#80349E', 'fas fa-bolt', 0);
 
 -- --------------------------------------------------------
 
@@ -178,8 +193,8 @@ INSERT INTO `flarum_groups` (`id`, `name_singular`, `name_plural`, `color`, `ico
 --
 
 CREATE TABLE `flarum_group_permission` (
-  `group_id` int(10) UNSIGNED NOT NULL,
-  `permission` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
+  `group_id` int UNSIGNED NOT NULL,
+  `permission` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -192,7 +207,6 @@ INSERT INTO `flarum_group_permission` (`group_id`, `permission`) VALUES
 (3, 'discussion.likePosts'),
 (3, 'discussion.reply'),
 (3, 'discussion.replyWithoutApproval'),
-(3, 'discussion.selectBestAnswerOwnDiscussion'),
 (3, 'discussion.startWithoutApproval'),
 (3, 'startDiscussion'),
 (3, 'viewUserList'),
@@ -216,8 +230,8 @@ INSERT INTO `flarum_group_permission` (`group_id`, `permission`) VALUES
 --
 
 CREATE TABLE `flarum_group_user` (
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `group_id` int(10) UNSIGNED NOT NULL
+  `user_id` int UNSIGNED NOT NULL,
+  `group_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -234,10 +248,10 @@ INSERT INTO `flarum_group_user` (`user_id`, `group_id`) VALUES
 --
 
 CREATE TABLE `flarum_login_providers` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `provider` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `identifier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `provider` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `identifier` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `last_login_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -249,8 +263,8 @@ CREATE TABLE `flarum_login_providers` (
 --
 
 CREATE TABLE `flarum_migrations` (
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `extension` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `extension` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -369,10 +383,9 @@ INSERT INTO `flarum_migrations` (`migration`, `extension`) VALUES
 ('2018_06_27_103000_rename_discussions_tags_to_discussion_tag', 'flarum-tags'),
 ('2018_06_27_103100_add_discussion_tag_foreign_keys', 'flarum-tags'),
 ('2019_04_21_000000_add_icon_to_tags_table', 'flarum-tags'),
-('2019_11_04_000001_add_columns_to_discussions_table', 'fof-best-answer'),
-('2019_11_04_000002_add_foreign_keys_to_best_anwer_columns', 'fof-best-answer'),
-('2019_11_04_000003_migrate_extension_settings', 'fof-best-answer'),
-('2020_02_04_205300_add_best_answer_set_timestamp', 'fof-best-answer');
+('2020_03_19_134512_change_discussions_default_comment_count', NULL),
+('2020_04_21_130500_change_permission_groups_add_is_hidden', NULL),
+('2019_10_22_000000_change_reason_text_col_type', 'flarum-flags');
 
 -- --------------------------------------------------------
 
@@ -381,11 +394,11 @@ INSERT INTO `flarum_migrations` (`migration`, `extension`) VALUES
 --
 
 CREATE TABLE `flarum_notifications` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `from_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `subject_id` int(10) UNSIGNED DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `from_user_id` int UNSIGNED DEFAULT NULL,
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subject_id` int UNSIGNED DEFAULT NULL,
   `data` blob,
   `created_at` datetime NOT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
@@ -399,8 +412,8 @@ CREATE TABLE `flarum_notifications` (
 --
 
 CREATE TABLE `flarum_password_tokens` (
-  `token` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL,
+  `token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -411,21 +424,28 @@ CREATE TABLE `flarum_password_tokens` (
 --
 
 CREATE TABLE `flarum_posts` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `discussion_id` int(10) UNSIGNED NOT NULL,
-  `number` int(10) UNSIGNED DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `discussion_id` int UNSIGNED NOT NULL,
+  `number` int UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `user_id` int(10) UNSIGNED DEFAULT NULL,
-  `type` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `content` mediumtext COLLATE utf8mb4_unicode_ci COMMENT ' ',
+  `user_id` int UNSIGNED DEFAULT NULL,
+  `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT ' ',
   `edited_at` datetime DEFAULT NULL,
-  `edited_user_id` int(10) UNSIGNED DEFAULT NULL,
+  `edited_user_id` int UNSIGNED DEFAULT NULL,
   `hidden_at` datetime DEFAULT NULL,
-  `hidden_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hidden_user_id` int UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   `is_approved` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `flarum_posts`
+--
+
+INSERT INTO `flarum_posts` (`id`, `discussion_id`, `number`, `created_at`, `user_id`, `type`, `content`, `edited_at`, `edited_user_id`, `hidden_at`, `hidden_user_id`, `ip_address`, `is_private`, `is_approved`) VALUES
+(1, 1, 1, '2020-10-28 19:43:28', 1, 'comment', '<t><p>Hello, Flarum-world &#127760;</p> </t>', NULL, NULL, NULL, NULL, '172.20.0.1', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -434,8 +454,8 @@ CREATE TABLE `flarum_posts` (
 --
 
 CREATE TABLE `flarum_post_likes` (
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL
+  `post_id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -445,8 +465,8 @@ CREATE TABLE `flarum_post_likes` (
 --
 
 CREATE TABLE `flarum_post_mentions_post` (
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `mentions_post_id` int(10) UNSIGNED NOT NULL
+  `post_id` int UNSIGNED NOT NULL,
+  `mentions_post_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -456,8 +476,8 @@ CREATE TABLE `flarum_post_mentions_post` (
 --
 
 CREATE TABLE `flarum_post_mentions_user` (
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `mentions_user_id` int(10) UNSIGNED NOT NULL
+  `post_id` int UNSIGNED NOT NULL,
+  `mentions_user_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -467,8 +487,8 @@ CREATE TABLE `flarum_post_mentions_user` (
 --
 
 CREATE TABLE `flarum_post_user` (
-  `post_id` int(10) UNSIGNED NOT NULL,
-  `user_id` int(10) UNSIGNED NOT NULL
+  `post_id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -478,12 +498,12 @@ CREATE TABLE `flarum_post_user` (
 --
 
 CREATE TABLE `flarum_registration_tokens` (
-  `token` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` text COLLATE utf8mb4_unicode_ci,
+  `token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` datetime DEFAULT NULL,
-  `provider` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `identifier` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `user_attributes` text COLLATE utf8mb4_unicode_ci
+  `provider` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `identifier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_attributes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -493,8 +513,8 @@ CREATE TABLE `flarum_registration_tokens` (
 --
 
 CREATE TABLE `flarum_settings` (
-  `key` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` text COLLATE utf8mb4_unicode_ci
+  `key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -508,7 +528,7 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 ('custom_less', ''),
 ('default_locale', 'en'),
 ('default_route', '/all'),
-('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\",\"fof-best-answer\"]'),
+('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\"]'),
 ('flarum-tags.max_primary_tags', '1'),
 ('flarum-tags.max_secondary_tags', '3'),
 ('flarum-tags.min_primary_tags', '1'),
@@ -528,7 +548,7 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 ('theme_dark_mode', '0'),
 ('theme_primary_color', '#4D698E'),
 ('theme_secondary_color', '#4D698E'),
-('version', '0.1.0-beta.11.1'),
+('version', '0.1.0-beta.13'),
 ('welcome_message', 'This is beta software and you should not use it in production.'),
 ('welcome_title', 'Welcome to Flarum Dev Docker');
 
@@ -539,23 +559,23 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 --
 
 CREATE TABLE `flarum_tags` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `color` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `background_path` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `background_mode` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `position` int(11) DEFAULT NULL,
-  `parent_id` int(10) UNSIGNED DEFAULT NULL,
-  `default_sort` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `background_path` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `background_mode` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `position` int DEFAULT NULL,
+  `parent_id` int UNSIGNED DEFAULT NULL,
+  `default_sort` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_restricted` tinyint(1) NOT NULL DEFAULT '0',
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
-  `discussion_count` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `discussion_count` int UNSIGNED NOT NULL DEFAULT '0',
   `last_posted_at` datetime DEFAULT NULL,
-  `last_posted_discussion_id` int(10) UNSIGNED DEFAULT NULL,
-  `last_posted_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `icon` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `last_posted_discussion_id` int UNSIGNED DEFAULT NULL,
+  `last_posted_user_id` int UNSIGNED DEFAULT NULL,
+  `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -563,7 +583,7 @@ CREATE TABLE `flarum_tags` (
 --
 
 INSERT INTO `flarum_tags` (`id`, `name`, `slug`, `description`, `color`, `background_path`, `background_mode`, `position`, `parent_id`, `default_sort`, `is_restricted`, `is_hidden`, `discussion_count`, `last_posted_at`, `last_posted_discussion_id`, `last_posted_user_id`, `icon`) VALUES
-(1, 'General', 'general', NULL, '#888', NULL, NULL, 0, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, NULL);
+(1, 'General', 'general', NULL, '#888', NULL, NULL, 0, NULL, NULL, 0, 0, 1, '2020-10-28 19:43:28', 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -572,8 +592,8 @@ INSERT INTO `flarum_tags` (`id`, `name`, `slug`, `description`, `color`, `backgr
 --
 
 CREATE TABLE `flarum_tag_user` (
-  `user_id` int(10) UNSIGNED NOT NULL,
-  `tag_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
+  `tag_id` int UNSIGNED NOT NULL,
   `marked_as_read_at` datetime DEFAULT NULL,
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -585,20 +605,20 @@ CREATE TABLE `flarum_tag_user` (
 --
 
 CREATE TABLE `flarum_users` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` int UNSIGNED NOT NULL,
+  `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_email_confirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `bio` text COLLATE utf8mb4_unicode_ci,
-  `avatar_url` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bio` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `avatar_url` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `preferences` blob,
   `joined_at` datetime DEFAULT NULL,
   `last_seen_at` datetime DEFAULT NULL,
   `marked_all_as_read_at` datetime DEFAULT NULL,
   `read_notifications_at` datetime DEFAULT NULL,
-  `discussion_count` int(10) UNSIGNED NOT NULL DEFAULT '0',
-  `comment_count` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `discussion_count` int UNSIGNED NOT NULL DEFAULT '0',
+  `comment_count` int UNSIGNED NOT NULL DEFAULT '0',
   `read_flags_at` datetime DEFAULT NULL,
   `suspended_until` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -608,7 +628,7 @@ CREATE TABLE `flarum_users` (
 --
 
 INSERT INTO `flarum_users` (`id`, `username`, `email`, `is_email_confirmed`, `password`, `bio`, `avatar_url`, `preferences`, `joined_at`, `last_seen_at`, `marked_all_as_read_at`, `read_notifications_at`, `discussion_count`, `comment_count`, `read_flags_at`, `suspended_until`) VALUES
-(1, 'admin', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-02-22 07:49:14', NULL, NULL, 0, 0, NULL, NULL);
+(1, 'admin', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-10-28 19:45:58', NULL, NULL, 1, 1, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -645,10 +665,7 @@ ALTER TABLE `flarum_discussions`
   ADD KEY `flarum_discussions_participant_count_index` (`participant_count`),
   ADD KEY `flarum_discussions_hidden_at_index` (`hidden_at`),
   ADD KEY `flarum_discussions_is_locked_index` (`is_locked`),
-  ADD KEY `flarum_discussions_is_sticky_created_at_index` (`is_sticky`,`created_at`),
-  ADD KEY `flarum_discussions_best_answer_post_id_foreign` (`best_answer_post_id`),
-  ADD KEY `flarum_discussions_best_answer_user_id_foreign` (`best_answer_user_id`),
-  ADD KEY `flarum_discussions_best_answer_set_at_index` (`best_answer_set_at`);
+  ADD KEY `flarum_discussions_is_sticky_created_at_index` (`is_sticky`,`created_at`);
 ALTER TABLE `flarum_discussions` ADD FULLTEXT KEY `title` (`title`);
 
 --
@@ -813,55 +830,55 @@ ALTER TABLE `flarum_users`
 -- AUTO_INCREMENT for table `flarum_api_keys`
 --
 ALTER TABLE `flarum_api_keys`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `flarum_discussions`
 --
 ALTER TABLE `flarum_discussions`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `flarum_flags`
 --
 ALTER TABLE `flarum_flags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `flarum_groups`
 --
 ALTER TABLE `flarum_groups`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `flarum_login_providers`
 --
 ALTER TABLE `flarum_login_providers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `flarum_notifications`
 --
 ALTER TABLE `flarum_notifications`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `flarum_posts`
 --
 ALTER TABLE `flarum_posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `flarum_tags`
 --
 ALTER TABLE `flarum_tags`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `flarum_users`
 --
 ALTER TABLE `flarum_users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
@@ -883,8 +900,6 @@ ALTER TABLE `flarum_api_keys`
 -- Constraints for table `flarum_discussions`
 --
 ALTER TABLE `flarum_discussions`
-  ADD CONSTRAINT `flarum_discussions_best_answer_post_id_foreign` FOREIGN KEY (`best_answer_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `flarum_discussions_best_answer_user_id_foreign` FOREIGN KEY (`best_answer_user_id`) REFERENCES `flarum_users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_first_post_id_foreign` FOREIGN KEY (`first_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_hidden_user_id_foreign` FOREIGN KEY (`hidden_user_id`) REFERENCES `flarum_users` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `flarum_discussions_last_post_id_foreign` FOREIGN KEY (`last_post_id`) REFERENCES `flarum_posts` (`id`) ON DELETE SET NULL,
