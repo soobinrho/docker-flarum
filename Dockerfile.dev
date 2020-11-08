@@ -14,7 +14,7 @@ WORKDIR /var/www
 
 RUN rm -rf /var/www/html
 COPY . /var/www/
-RUN composer install --no-dev \
+RUN composer install \
   && chmod -R g+w /var/www \
   && chmod 755 /usr/local/bin/startup
 
