@@ -1,4 +1,4 @@
-FROM percona:8
+FROM mysql:8
 
 ENV MYSQL_USER "flarum"
 ENV MYSQL_PASSWORD "flarum"

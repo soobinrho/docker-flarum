@@ -1,6 +1,7 @@
 #!/bin/bash
 
-chmod -R 777 /var/www
+# Workaround for permissions issues running the docker images on Ubuntu
+usermod -u 1000 www-data
 
 cd /var/www
 

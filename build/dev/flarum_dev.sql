@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: flarumdb
--- Generation Time: Oct 28, 2020 at 07:46 PM
--- Server version: 8.0.20-11
+-- Generation Time: Dec 21, 2020 at 03:30 PM
+-- Server version: 8.0.22
 -- PHP Version: 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -40,7 +40,8 @@ CREATE TABLE `flarum_access_tokens` (
 --
 
 INSERT INTO `flarum_access_tokens` (`token`, `user_id`, `last_activity_at`, `lifetime_seconds`, `created_at`) VALUES
-('1dA4pFuz9sTdtsSTx4aECafuTuK30Sxe1CKDXg4D', 1, '2020-02-22 07:30:44', 3600, '2020-02-22 07:30:44');
+('1dA4pFuz9sTdtsSTx4aECafuTuK30Sxe1CKDXg4D', 1, '2020-02-22 07:30:44', 3600, '2020-02-22 07:30:44'),
+('J0UEllhpRF5TkCkkjJLzSenujd01SxcDoUh0i6I2', 1, '2020-12-21 15:28:08', 3600, '2020-12-21 15:28:08');
 
 -- --------------------------------------------------------
 
@@ -209,6 +210,7 @@ INSERT INTO `flarum_group_permission` (`group_id`, `permission`) VALUES
 (3, 'discussion.replyWithoutApproval'),
 (3, 'discussion.startWithoutApproval'),
 (3, 'startDiscussion'),
+(3, 'user.editOwnNickname'),
 (3, 'viewUserList'),
 (4, 'discussion.approvePosts'),
 (4, 'discussion.editPosts'),
@@ -385,7 +387,10 @@ INSERT INTO `flarum_migrations` (`migration`, `extension`) VALUES
 ('2019_04_21_000000_add_icon_to_tags_table', 'flarum-tags'),
 ('2020_03_19_134512_change_discussions_default_comment_count', NULL),
 ('2020_04_21_130500_change_permission_groups_add_is_hidden', NULL),
-('2019_10_22_000000_change_reason_text_col_type', 'flarum-flags');
+('2019_10_22_000000_change_reason_text_col_type', 'flarum-flags'),
+('2020_11_23_000000_add_nickname_column', 'flarum-nicknames'),
+('2020_12_02_000000_set_default_settings', 'flarum-nicknames'),
+('2020_12_02_000001_set_default_permissions', 'flarum-nicknames');
 
 -- --------------------------------------------------------
 
@@ -528,7 +533,12 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 ('custom_less', ''),
 ('default_locale', 'en'),
 ('default_route', '/all'),
-('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\"]'),
+('display_name_driver', 'nickname'),
+('extensions_enabled', '[\"flarum-approval\",\"flarum-bbcode\",\"flarum-emoji\",\"flarum-lang-english\",\"flarum-flags\",\"flarum-likes\",\"flarum-lock\",\"flarum-markdown\",\"flarum-mentions\",\"flarum-statistics\",\"flarum-sticky\",\"flarum-subscriptions\",\"flarum-suspend\",\"flarum-tags\",\"bokt-redis\",\"flarum-nicknames\"]'),
+('flarum-nicknames.max', '150'),
+('flarum-nicknames.min', '3'),
+('flarum-nicknames.regex', ''),
+('flarum-nicknames.unique', '1'),
 ('flarum-tags.max_primary_tags', '1'),
 ('flarum-tags.max_secondary_tags', '3'),
 ('flarum-tags.min_primary_tags', '1'),
@@ -544,11 +554,14 @@ INSERT INTO `flarum_settings` (`key`, `value`) VALUES
 ('forum_title', 'Flarum Dev Docker'),
 ('mail_driver', 'log'),
 ('mail_from', 'noreply@localhost'),
+('show_language_selector', '1'),
+('slug_driver_Flarum\\Discussion\\Discussion', 'default'),
+('slug_driver_Flarum\\User\\User', 'default'),
 ('theme_colored_header', '0'),
 ('theme_dark_mode', '0'),
 ('theme_primary_color', '#4D698E'),
 ('theme_secondary_color', '#4D698E'),
-('version', '0.1.0-beta.13'),
+('version', '0.1.0-beta.15'),
 ('welcome_message', 'This is beta software and you should not use it in production.'),
 ('welcome_title', 'Welcome to Flarum Dev Docker');
 
@@ -607,6 +620,7 @@ CREATE TABLE `flarum_tag_user` (
 CREATE TABLE `flarum_users` (
   `id` int UNSIGNED NOT NULL,
   `username` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nickname` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_email_confirmed` tinyint(1) NOT NULL DEFAULT '0',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -627,8 +641,8 @@ CREATE TABLE `flarum_users` (
 -- Dumping data for table `flarum_users`
 --
 
-INSERT INTO `flarum_users` (`id`, `username`, `email`, `is_email_confirmed`, `password`, `bio`, `avatar_url`, `preferences`, `joined_at`, `last_seen_at`, `marked_all_as_read_at`, `read_notifications_at`, `discussion_count`, `comment_count`, `read_flags_at`, `suspended_until`) VALUES
-(1, 'admin', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-10-28 19:45:58', NULL, NULL, 1, 1, NULL, NULL);
+INSERT INTO `flarum_users` (`id`, `username`, `nickname`, `email`, `is_email_confirmed`, `password`, `bio`, `avatar_url`, `preferences`, `joined_at`, `last_seen_at`, `marked_all_as_read_at`, `read_notifications_at`, `discussion_count`, `comment_count`, `read_flags_at`, `suspended_until`) VALUES
+(1, 'admin', '', 'admin@example.com', 1, '$2y$10$4EtFTSogliftqOuWgaADv.giCV93SY.k6PUZfPmg7QDwbTITkL/pi', NULL, NULL, NULL, '2020-02-22 03:27:01', '2020-12-21 15:29:52', NULL, NULL, 1, 1, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -820,7 +834,8 @@ ALTER TABLE `flarum_users`
   ADD KEY `flarum_users_joined_at_index` (`joined_at`),
   ADD KEY `flarum_users_last_seen_at_index` (`last_seen_at`),
   ADD KEY `flarum_users_discussion_count_index` (`discussion_count`),
-  ADD KEY `flarum_users_comment_count_index` (`comment_count`);
+  ADD KEY `flarum_users_comment_count_index` (`comment_count`),
+  ADD KEY `flarum_users_nickname_index` (`nickname`);
 
 --
 -- AUTO_INCREMENT for dumped tables

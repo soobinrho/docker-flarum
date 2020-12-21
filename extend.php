@@ -22,5 +22,5 @@ $redisConfig = [
 return [
     new FoF\Console\Extend\EnableConsole(),
     new Bokt\Redis\Extend\EnableRedisCache($redisConfig),
-    new Bokt\Redis\Extend\EnableRedisQueue($redisConfig)
+    //new Bokt\Redis\Extend\EnableRedisQueue($redisConfig)
 ];
