@@ -8,8 +8,9 @@
             "name": "Listen for XDebug",
             "type": "php",
             "request": "launch",
-            "port": 9001,
-            "hostname": "0.0.0.0",
+            "port": 9005,
+            "hostname": "localhost",
+            "log": true,
             "pathMappings": {
                 "/var/www/": "${workspaceRoot}"
             }
