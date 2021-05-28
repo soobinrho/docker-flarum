@@ -1,4 +1,5 @@
-FROM ianmgg/php74:dev
+FROM ianmgg/php80:dev
+#FROM islamicnetwork/php73:dev
 
 COPY ./scripts/docker/config/apache/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
 COPY ./scripts/docker/config/apache/status.conf /etc/apache2/mods-enabled/status.conf
@@ -24,6 +25,8 @@ ENV MYSQL_USER "flarum"
 ENV MYSQL_PASSWORD "flarum"
 ENV MYSQL_HOST "communitydb"
 ENV MYSQL_PORT "3306"
+
+EXPOSE 6001
 
 RUN crontab /etc/cron.d/crontab
 

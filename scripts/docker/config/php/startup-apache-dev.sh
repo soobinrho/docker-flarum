@@ -11,6 +11,9 @@ php flarum cache:clear
 # We will also need to add the running of migrations here
 php flarum migrate
 
+# Publish the assets (fonts, js, etc)
+php flarum assets:publish
+
 # Make the environment variables available for cron
 printenv | grep -v "no_proxy" >> /etc/environment
 

@@ -10,9 +10,15 @@ services:
     links:
       - flarum-db
     ports:
-      - "127.0.0.1:8001:8080"
+      - "80:8080"
+      - "6001:6001"
     volumes:
-      - .:/var/www:delegated
+      - ./config.php:/var/www/config.php:delegated
+      - ./extend.php:/var/www/extend.php:delegated
+      - ./storage/xdebug:/var/www/storage/xdebug:delegated
+      - ./storage/logs:/var/www/storage/logs:delegated
+      - ./vendor:/var/www/vendor:delegated
+      - ./workbench:/var/www/workbench:delegated
     privileged: true
     container_name: flarum-svc
     environment:
@@ -22,17 +28,23 @@ services:
       MYSQL_HOST: flarumdb
       MYSQL_PORT: 3306
       DB_DRIVER: mysql
-      BASE_URL: "http://localhost:8001"
+      BASE_URL: "http://flarum.local"
       REDIS_HOST: "redis"
       REDIS_PORT: "6379"
       DEBUG: "true"
       LOCAL: "true"
+      AWS_ACCESS_KEY_ID: 'foo'
+      AWS_SECRET_ACCESS_KEY: 'bar'
+      AWS_DEFAULT_REGION: 'eu-west-2'
+      AWS_BUCKET: 'bucket'
+      AWS_URL: 'http://localhost:4566/bucket'
+      AWS_ENDPOINT: 'http://localstack:4566'
 
   #######################################
   # Redis
   #######################################
   redis:
-    image: redis:5
+    image: redis:6
     container_name: redis
     ports:
       - "6379:6379"
@@ -74,6 +86,38 @@ services:
     container_name: flarumpma
 
   #######################################
+  # Redis admin
+  #######################################
+  redisadmin:
+    image: erikdubbelboer/phpredisadmin
+    ports:
+      - "8003:80"
+    depends_on:
+      - redis
+    environment:
+      REDIS_1_HOST: redis
+      REDIS_1_NAME: LocalRedis
+
+  #######################################
+  # Localstack
+  #######################################
+  localstack-s3:
+    image: localstack/localstack:latest
+    container_name: localstack
+    environment:
+     - HOSTNAME=localstack
+     - SERVICES=s3
+     - AWS_ACCESS_KEY_ID=foo
+     - AWS_SECRET_ACCESS_KEY=bar
+     - DEFAULT_REGION=eu-west-2
+     - DATA_DIR=/tmp/localstack/data
+    ports:
+     - "4566:4566"
+    volumes:
+      - localstack-data:/tmp/localstack:delegated
+      - './scripts/docker/config/localstack:/docker-entrypoint-initaws.d'
+
+  #######################################
   # Local Queue Worker
   #######################################
   # apache-queue:
@@ -81,7 +125,12 @@ services:
   #     context: .
   #     dockerfile: Dockerfile.queue.dev
   #   volumes:
-  #     - .:/var/www:delegated
+  #     - ./config.php:/var/www/config.php:delegated
+  #     - ./extend.php:/var/www/extend.php:delegated
+  #     - ./storage/xdebug:/var/www/storage/xdebug:delegated
+  #     - ./storage/logs:/var/www/storage/logs:delegated
+  #     - ./vendor:/var/www/vendor:delegated
+  #     - ./workbench:/var/www/workbench:delegated
   #   privileged: true
   #   links:
   #     - flarum-db
@@ -101,3 +150,5 @@ services:
 
 volumes:
   database:
+  localstack-data:
+    name: localstack-data
