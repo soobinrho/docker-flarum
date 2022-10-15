@@ -52,7 +52,7 @@ $ docker-compose build
 $ docker-compose up
 ```
 
-Read the **[Installation guide](https://flarum.org/docs/install.html)** for more information. For support, refer to the [documentation](https://flarum.org/docs/), and ask questions on the [community forum](https://discuss.flarum.org/) or [Discord chat](https://flarum.org/discord/).
+Read the **[Installation guide](https://docs.flarum.org/install)** for more information. For support, refer to the [documentation](https://docs.flarum.org), and ask questions on the [community forum](https://discuss.flarum.org/) or [Discord chat](https://flarum.org/discord/).
 
 
 ## License
