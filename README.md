@@ -1,5 +1,12 @@
-<p align="center"><img src="https://flarum.org/img/logo.png"></p>
-<p align="center"><img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" style="max-width:150px"></p>
+<p align="center">
+  <a href="https://flarum.org">
+    <img src="https://user-images.githubusercontent.com/19341857/181917693-c9391c43-65f3-4986-a972-97012404f6ed.svg" width="300">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://www.docker.com">
+    <img src="https://www.docker.com/sites/default/files/d8/2019-07/vertical-logo-monochromatic.png" width="300">
+  </a>
+</p>
 
 
 ## About this project
