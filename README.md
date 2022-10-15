@@ -40,7 +40,7 @@ All Flarum settings are default, except
 
 * **Powerful and extensible.** Customize, extend, and integrate Flarum to suit your community. Flarum’s architecture is amazingly flexible, with a powerful Extension API.
 
-![screenshot](https://flarum.org/img/screenshot.png)
+![screenshot](https://user-images.githubusercontent.com/19341857/195999533-a1b268d4-e572-4985-9117-21bde128ff70.png)
 
 ## Installation
 
